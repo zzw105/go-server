@@ -1,0 +1,66 @@
+# =====================
+# Go
+# =====================
+# 编译生成的可执行文件
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Go 的构建输出目录
+/bin/
+/build/
+/tmp/
+/out/
+/uploads
+
+# Go module 自动生成文件
+/go.sum
+/vendor/
+
+# =====================
+# Logs
+# =====================
+*.log
+*.out
+
+# =====================
+# IDE / 编辑器
+# =====================
+# VS Code
+.vscode/
+.history/
+*.code-workspace
+
+# JetBrains 系列
+.idea/
+*.iml
+
+# =====================
+# 系统文件
+# =====================
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Mac
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =====================
+# Environment files
+# =====================
+.env
+.env.local
+.env.*.local
+
+# =====================
+# MySQL / 数据库
+# =====================
+# 你本地数据库 dump / sqlite 文件等
+*.db
+*.sqlite
+*.sql
