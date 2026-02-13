@@ -8,35 +8,36 @@ import (
 	"go-server/service"
 )
 
-// GetClassificationTree 获取支出分类树
-// @Summary      获取支出分类树
-// @Description  获取所有支出分类，按树形结构返回
-// @Tags         支出分类
+// GetIncomeClassificationTree 获取收入分类树
+// @Summary      获取收入分类树
+// @Description  获取所有收入分类，按树形结构返回
+// @Tags         收入分类
 // @Accept       json
 // @Produce      json
 // @Success      200 {object} model.Response[[]service.TreeNodeDTO] "成功返回分类树"
 // @Failure      500 {object} model.Response[any] "服务器错误"
-// @Router       /classification [get]
-func GetClassificationTree(c *gin.Context) {
-	var list []model.Classification
+// @Router       /income-classification [get]
+func GetIncomeClassificationTree(c *gin.Context) {
+	var list []model.IncomeClassification
 	config.DB.Order("sort ASC").Find(&list)
 
 	tree := service.BuildTree(0, list)
+
 	c.JSON(200, model.SuccessWithData(tree))
 }
 
-// UpdateClassificationTree 更新支出分类树
-// @Summary      更新整个支出分类树
-// @Description  替换数据库中的所有支出分类数据，前端传入完整的树结构
-// @Tags         支出分类
+// UpdateIncomeClassificationTree 更新收入分类树
+// @Summary      更新整个收入分类树
+// @Description  替换数据库中的所有收入分类数据，前端传入完整的树结构
+// @Tags         收入分类
 // @Accept       json
 // @Produce      json
 // @Param        request  body      service.UpdateTreeRequest    true  "分类树数据"
 // @Success      200      {object}  model.Response[bool]         "更新成功"
 // @Failure      400      {object}  model.Response[any]          "请求参数错误"
 // @Failure      500      {object}  model.Response[any]          "服务器错误"
-// @Router       /classification [put]
-func UpdateClassificationTree(c *gin.Context) {
+// @Router       /income-classification [put]
+func UpdateIncomeClassificationTree(c *gin.Context) {
 	var req service.UpdateTreeRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		c.JSON(400, model.Error(400, err.Error()))
@@ -52,8 +53,8 @@ func UpdateClassificationTree(c *gin.Context) {
 	}()
 
 	// 更新树
-	if err := service.UpdateTree(tx, "classifications", req.Tree, func() *model.Classification {
-		return &model.Classification{}
+	if err := service.UpdateTree(tx, "income_classifications", req.Tree, func() *model.IncomeClassification {
+		return &model.IncomeClassification{}
 	}); err != nil {
 		tx.Rollback()
 		c.JSON(500, model.Error(500, "更新失败: "+err.Error()))
@@ -67,5 +68,4 @@ func UpdateClassificationTree(c *gin.Context) {
 	}
 
 	c.JSON(200, model.SuccessWithData(true))
-
 }

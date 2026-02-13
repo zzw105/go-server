@@ -1,0 +1,187 @@
+basePath: /
+definitions:
+  model.Response-any:
+    properties:
+      code:
+        type: integer
+      data: {}
+      msg:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - data
+    - msg
+    - success
+    type: object
+  model.Response-array_service_TreeNodeDTO:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/service.TreeNodeDTO'
+        type: array
+      msg:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - data
+    - msg
+    - success
+    type: object
+  model.Response-bool:
+    properties:
+      code:
+        type: integer
+      data:
+        type: boolean
+      msg:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - data
+    - msg
+    - success
+    type: object
+  service.TreeNodeDTO:
+    properties:
+      children:
+        items:
+          $ref: '#/definitions/service.TreeNodeDTO'
+        type: array
+      id:
+        type: integer
+      name:
+        type: string
+    required:
+    - id
+    - name
+    type: object
+  service.UpdateTreeRequest:
+    properties:
+      tree:
+        items:
+          $ref: '#/definitions/service.TreeNodeDTO'
+        type: array
+    required:
+    - tree
+    type: object
+host: localhost:5200
+info:
+  contact:
+    email: your-email@example.com
+    name: API Support
+  description: 账本管理系统的后端 API 接口文档
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: 账本系统 API
+  version: "1.0"
+paths:
+  /classification:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有支出分类，按树形结构返回
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回分类树
+          schema:
+            $ref: '#/definitions/model.Response-array_service_TreeNodeDTO'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+      summary: 获取支出分类树
+      tags:
+      - 支出分类
+    put:
+      consumes:
+      - application/json
+      description: 替换数据库中的所有支出分类数据，前端传入完整的树结构
+      parameters:
+      - description: 分类树数据
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/service.UpdateTreeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/model.Response-bool'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+      summary: 更新整个支出分类树
+      tags:
+      - 支出分类
+  /income-classification:
+    get:
+      consumes:
+      - application/json
+      description: 获取所有收入分类，按树形结构返回
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 成功返回分类树
+          schema:
+            $ref: '#/definitions/model.Response-array_service_TreeNodeDTO'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+      summary: 获取收入分类树
+      tags:
+      - 收入分类
+    put:
+      consumes:
+      - application/json
+      description: 替换数据库中的所有收入分类数据，前端传入完整的树结构
+      parameters:
+      - description: 分类树数据
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/service.UpdateTreeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 更新成功
+          schema:
+            $ref: '#/definitions/model.Response-bool'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+      summary: 更新整个收入分类树
+      tags:
+      - 收入分类
+schemes:
+- http
+- https
+swagger: "2.0"

@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/xuri/excelize/v2"
+
+	"go-server/model"
 )
 
 type ExportItem struct {
@@ -18,7 +20,7 @@ func ExportExcel(c *gin.Context) {
 
 	// 1. 接收前端 JSON
 	if err := c.ShouldBindJSON(&list); err != nil {
-		c.JSON(400, gin.H{"msg": err.Error()})
+		c.JSON(400, model.Error(400, err.Error()))
 		return
 	}
 
@@ -45,7 +47,7 @@ func ExportExcel(c *gin.Context) {
 	// 5. 写入内存
 	buf, err := f.WriteToBuffer()
 	if err != nil {
-		c.JSON(500, gin.H{"msg": "生成 Excel 失败"})
+		c.JSON(500, model.Error(500, "生成 Excel 失败"))
 		return
 	}
 

@@ -8,6 +8,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"go-server/model"
+
 	"golang.org/x/text/encoding/simplifiedchinese"
 	"golang.org/x/text/transform"
 )
@@ -16,13 +18,13 @@ import (
 func UploadFile(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "获取文件失败: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.Error(400, "获取文件失败: "+err.Error()))
 		return
 	}
 
 	f, err := file.Open()
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "打开文件失败: " + err.Error()})
+		c.JSON(http.StatusInternalServerError, model.Error(500, "打开文件失败: "+err.Error()))
 		return
 	}
 	defer f.Close()
@@ -34,7 +36,7 @@ func UploadFile(c *gin.Context) {
 	// 2️⃣ 跳过表头（可选）
 	_, err = reader.Read()
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"msg": "读取表头失败: " + err.Error()})
+		c.JSON(http.StatusBadRequest, model.Error(400, "读取表头失败: "+err.Error()))
 		return
 	}
 	var recordsList [][]string
@@ -44,7 +46,7 @@ func UploadFile(c *gin.Context) {
 			break
 		}
 		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"msg": "读取 CSV 行失败: " + err.Error()})
+			c.JSON(http.StatusBadRequest, model.Error(400, "读取 CSV 行失败: "+err.Error()))
 			return
 		}
 
@@ -60,7 +62,5 @@ func UploadFile(c *gin.Context) {
 		recordsList = append(recordsList, record)
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"data": recordsList,
-	})
+	c.JSON(http.StatusOK, model.SuccessWithData(recordsList))
 }
