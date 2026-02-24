@@ -1,10 +1,39 @@
 basePath: /
 definitions:
+  handler.ExportItem:
+    properties:
+      age:
+        type: integer
+      amount:
+        type: number
+      name:
+        type: string
+    type: object
   model.Response-any:
     properties:
       code:
         type: integer
       data: {}
+      msg:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - data
+    - msg
+    - success
+    type: object
+  model.Response-array_array_string:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          items:
+            type: string
+          type: array
+        type: array
       msg:
         type: string
       success:
@@ -133,6 +162,38 @@ paths:
       summary: 更新整个支出分类树
       tags:
       - 支出分类
+  /export:
+    post:
+      consumes:
+      - application/json
+      description: 接收 JSON 数组，生成并以附件形式下载 Excel 文件
+      parameters:
+      - description: 导出数据列表
+        in: body
+        name: body
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/handler.ExportItem'
+          type: array
+      produces:
+      - application/octet-stream
+      responses:
+        "200":
+          description: Excel 文件（.xlsx）
+          schema:
+            type: file
+        "400":
+          description: 参数错误
+          schema:
+            $ref: '#/definitions/model.Response-bool'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-bool'
+      summary: 导出 Excel
+      tags:
+      - 导出
   /income-classification:
     get:
       consumes:
@@ -181,6 +242,35 @@ paths:
       summary: 更新整个收入分类树
       tags:
       - 收入分类
+  /upload:
+    post:
+      consumes:
+      - multipart/form-data
+      description: 上传 GB2312/GBK 编码的 CSV 文件，自动转码后解析并返回数据行列表
+      parameters:
+      - description: CSV 文件（GB2312 编码）
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 解析后的数据行列表
+          schema:
+            $ref: '#/definitions/model.Response-array_array_string'
+        "400":
+          description: 文件获取或解析失败
+          schema:
+            $ref: '#/definitions/model.Response-bool'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-bool'
+      summary: 上传 CSV 文件（GB2312 编码）
+      tags:
+      - 上传
 schemes:
 - http
 - https

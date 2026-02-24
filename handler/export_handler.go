@@ -15,6 +15,17 @@ type ExportItem struct {
 	Amount float64 `json:"amount"`
 }
 
+// ExportExcel 导出 Excel 文件
+// @Summary      导出 Excel
+// @Description  接收 JSON 数组，生成并以附件形式下载 Excel 文件
+// @Tags         导出
+// @Accept       json
+// @Produce      application/octet-stream
+// @Param        body  body      []ExportItem          true  "导出数据列表"
+// @Success      200   {file}    string                "Excel 文件（.xlsx）"
+// @Failure      400   {object}  model.Response[bool]  "参数错误"
+// @Failure      500   {object}  model.Response[bool]  "服务器错误"
+// @Router       /export [post]
 func ExportExcel(c *gin.Context) {
 	var list []ExportItem
 

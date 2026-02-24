@@ -14,7 +14,17 @@ import (
 	"golang.org/x/text/transform"
 )
 
-// UploadFile 处理 CSV 上传（GB2312）并插入数据库
+// UploadFile 上传 CSV 文件
+// @Summary      上传 CSV 文件（GB2312 编码）
+// @Description  上传 GB2312/GBK 编码的 CSV 文件，自动转码后解析并返回数据行列表
+// @Tags         上传
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        file  formData  file    true  "CSV 文件（GB2312 编码）"
+// @Success      200   {object}  model.Response[[][]string]  "解析后的数据行列表"
+// @Failure      400   {object}  model.Response[bool]        "文件获取或解析失败"
+// @Failure      500   {object}  model.Response[bool]        "服务器错误"
+// @Router       /upload [post]
 func UploadFile(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {

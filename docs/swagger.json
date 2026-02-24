@@ -94,6 +94,55 @@
                 }
             }
         },
+        "/export": {
+            "post": {
+                "description": "接收 JSON 数组，生成并以附件形式下载 Excel 文件",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/octet-stream"
+                ],
+                "tags": [
+                    "导出"
+                ],
+                "summary": "导出 Excel",
+                "parameters": [
+                    {
+                        "description": "导出数据列表",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handler.ExportItem"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel 文件（.xlsx）",
+                        "schema": {
+                            "type": "file"
+                        }
+                    },
+                    "400": {
+                        "description": "参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-bool"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-bool"
+                        }
+                    }
+                }
+            }
+        },
         "/income-classification": {
             "get": {
                 "description": "获取所有收入分类，按树形结构返回",
@@ -166,9 +215,67 @@
                     }
                 }
             }
+        },
+        "/upload": {
+            "post": {
+                "description": "上传 GB2312/GBK 编码的 CSV 文件，自动转码后解析并返回数据行列表",
+                "consumes": [
+                    "multipart/form-data"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "上传"
+                ],
+                "summary": "上传 CSV 文件（GB2312 编码）",
+                "parameters": [
+                    {
+                        "type": "file",
+                        "description": "CSV 文件（GB2312 编码）",
+                        "name": "file",
+                        "in": "formData",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "解析后的数据行列表",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-array_array_string"
+                        }
+                    },
+                    "400": {
+                        "description": "文件获取或解析失败",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-bool"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-bool"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
+        "handler.ExportItem": {
+            "type": "object",
+            "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "model.Response-any": {
             "type": "object",
             "required": [
@@ -182,6 +289,35 @@
                     "type": "integer"
                 },
                 "data": {},
+                "msg": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.Response-array_array_string": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "msg",
+                "success"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "msg": {
                     "type": "string"
                 },
