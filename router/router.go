@@ -13,6 +13,11 @@ func InitRouter() *gin.Engine {
 
 	// Swagger 文档路由
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// 测试接口
+	test := r.Group("/test")
+	{
+		test.POST("", handler.PostTest)
+	}
 
 	upload := r.Group("/upload")
 	{
