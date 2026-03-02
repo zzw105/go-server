@@ -41,5 +41,10 @@ func InitRouter() *gin.Engine {
 		export.POST("", handler.ExportExcel)
 	}
 
+	ai := r.Group("/ai")
+	{
+		ai.POST("ai-classification", handler.PostAiClassification)
+	}
+
 	return r
 }

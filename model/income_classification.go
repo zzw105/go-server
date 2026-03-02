@@ -12,7 +12,8 @@ type IncomeClassification struct {
 func (c IncomeClassification) GetID() int64        { return c.ID }
 func (c IncomeClassification) GetName() string     { return c.Name }
 func (c IncomeClassification) GetParentID() int64  { return c.ParentID }
-func (c *IncomeClassification) SetID(id int64)      { c.ID = id }
-func (c *IncomeClassification) SetParentID(id int64) { c.ParentID = id }
+func (c *IncomeClassification) SetID(id int64)        { c.ID = id }
+func (c *IncomeClassification) SetName(name string)   { c.Name = name }
+func (c *IncomeClassification) SetParentID(id int64)  { c.ParentID = id }
 func (c *IncomeClassification) SetLevel(level int)  { c.Level = level }
 func (c *IncomeClassification) SetSort(sort int)    { c.Sort = sort }

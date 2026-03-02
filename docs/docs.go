@@ -23,6 +23,52 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/ai/ai-classification": {
+            "post": {
+                "description": "根据支付宝账单数据，调用AI自动匹配支出/收入分类",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "AI"
+                ],
+                "summary": "AI智能分类账单",
+                "parameters": [
+                    {
+                        "description": "账单数据",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/service.PostAiClassificationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "分类结果",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-service_PostAiClassificationResult"
+                        }
+                    },
+                    "400": {
+                        "description": "请求参数错误",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-any"
+                        }
+                    },
+                    "500": {
+                        "description": "服务器错误",
+                        "schema": {
+                            "$ref": "#/definitions/model.Response-any"
+                        }
+                    }
+                }
+            }
+        },
         "/classification": {
             "get": {
                 "description": "获取所有支出分类，按树形结构返回",
@@ -374,6 +420,82 @@ const docTemplate = `{
                 },
                 "success": {
                     "type": "boolean"
+                }
+            }
+        },
+        "model.Response-service_PostAiClassificationResult": {
+            "type": "object",
+            "required": [
+                "code",
+                "data",
+                "msg",
+                "success"
+            ],
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {
+                    "$ref": "#/definitions/service.PostAiClassificationResult"
+                },
+                "msg": {
+                    "type": "string"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "service.AiClassificationItem": {
+            "type": "object",
+            "properties": {
+                "firstLevelClassificationId": {
+                    "type": "integer"
+                },
+                "firstLevelClassificationName": {
+                    "type": "string"
+                },
+                "secondLevelClassificationId": {
+                    "type": "integer"
+                },
+                "secondLevelClassificationName": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.PostAiClassificationRequest": {
+            "type": "object",
+            "required": [
+                "data"
+            ],
+            "properties": {
+                "data": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.PostAiClassificationResponse": {
+            "type": "object",
+            "properties": {
+                "classifications": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/service.AiClassificationItem"
+                    }
+                },
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "service.PostAiClassificationResult": {
+            "type": "object",
+            "properties": {
+                "arkRes": {
+                    "type": "object"
+                },
+                "arkTextObj": {
+                    "$ref": "#/definitions/service.PostAiClassificationResponse"
                 }
             }
         },

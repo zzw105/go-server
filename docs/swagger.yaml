@@ -78,6 +78,56 @@ definitions:
     - msg
     - success
     type: object
+  model.Response-service_PostAiClassificationResult:
+    properties:
+      code:
+        type: integer
+      data:
+        $ref: '#/definitions/service.PostAiClassificationResult'
+      msg:
+        type: string
+      success:
+        type: boolean
+    required:
+    - code
+    - data
+    - msg
+    - success
+    type: object
+  service.AiClassificationItem:
+    properties:
+      firstLevelClassificationId:
+        type: integer
+      firstLevelClassificationName:
+        type: string
+      secondLevelClassificationId:
+        type: integer
+      secondLevelClassificationName:
+        type: string
+    type: object
+  service.PostAiClassificationRequest:
+    properties:
+      data:
+        type: string
+    required:
+    - data
+    type: object
+  service.PostAiClassificationResponse:
+    properties:
+      classifications:
+        items:
+          $ref: '#/definitions/service.AiClassificationItem'
+        type: array
+      message:
+        type: string
+    type: object
+  service.PostAiClassificationResult:
+    properties:
+      arkRes:
+        type: object
+      arkTextObj:
+        $ref: '#/definitions/service.PostAiClassificationResponse'
+    type: object
   service.TreeNodeDTO:
     properties:
       children:
@@ -114,6 +164,36 @@ info:
   title: 账本系统 API
   version: "1.0"
 paths:
+  /ai/ai-classification:
+    post:
+      consumes:
+      - application/json
+      description: 根据支付宝账单数据，调用AI自动匹配支出/收入分类
+      parameters:
+      - description: 账单数据
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/service.PostAiClassificationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 分类结果
+          schema:
+            $ref: '#/definitions/model.Response-service_PostAiClassificationResult'
+        "400":
+          description: 请求参数错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+        "500":
+          description: 服务器错误
+          schema:
+            $ref: '#/definitions/model.Response-any'
+      summary: AI智能分类账单
+      tags:
+      - AI
   /classification:
     get:
       consumes:

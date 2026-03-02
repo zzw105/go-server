@@ -15,6 +15,7 @@ type TreeNodeReader interface {
 type TreeNode interface {
 	TreeNodeReader
 	SetID(int64)
+	SetName(string)
 	SetParentID(int64)
 	SetLevel(int)
 	SetSort(int)
@@ -65,6 +66,7 @@ func insertTreeNodes[T TreeNode](tx *gorm.DB, nodes []TreeNodeDTO, createModel f
 	for index, node := range nodes {
 		model := createModel()
 		model.SetID(node.ID)
+		model.SetName(node.Name)
 		model.SetParentID(parentID)
 		model.SetLevel(level)
 		model.SetSort(index)
